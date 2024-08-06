@@ -188,6 +188,7 @@ app.post('/passes', async (req, res) => {
       storeId: ''
     });
     await newPass.save();
+    console.log('Pass created successfully:', newPass);
     res.status(201).json(newPass);
   } catch (error) {
     console.error('Error creating pass:', error);
