@@ -81,20 +81,47 @@ app.post('/login', async (req, res) => {
   try {
     const user = await User.findOne({ username });
     if (user) {
-      user.authStatus = true;
-      await user.save();
-      res.json({ 
-        userId: user.userId,
-        username: user.username, 
-        petraWallet: user.petraWallet, 
-        metamask: user.metamask,
-        authStatus: user.authStatus
-      });
+      if (!user.authStatus) {
+        res.json({ 
+          userId: user.userId,
+          username: user.username, 
+          petraWallet: user.petraWallet, 
+          metamask: user.metamask,
+          authStatus: user.authStatus,
+          requiresAadhaar: true
+        });
+      } else {
+        res.json({ 
+          userId: user.userId,
+          username: user.username, 
+          petraWallet: user.petraWallet, 
+          metamask: user.metamask,
+          authStatus: user.authStatus,
+          requiresAadhaar: false
+        });
+      }
     } else {
       res.status(404).json({ error: 'User not found' });
     }
   } catch (error) {
     res.status(500).json({ error: 'Error logging in' });
+  }
+});
+
+// Update auth status route
+app.post('/update-auth-status', async (req, res) => {
+  const { username } = req.body;
+  try {
+    const user = await User.findOne({ username });
+    if (user) {
+      user.authStatus = true;
+      await user.save();
+      res.json({ message: 'Auth status updated successfully' });
+    } else {
+      res.status(404).json({ error: 'User not found' });
+    }
+  } catch (error) {
+    res.status(500).json({ error: 'Error updating auth status' });
   }
 });
 
