@@ -38,7 +38,11 @@ const Ticket = mongoose.model('Ticket', {
 
 // Pass model
 const Pass = mongoose.model('Pass', {
-  passId: String,
+  passId: {
+    type: Number,
+    min: 1000,
+    max: 9999
+  },
   username: String,
   price: Number,
   validUntil: Date,
@@ -145,12 +149,12 @@ app.post('/tickets', async (req, res) => {
 app.post('/passes', async (req, res) => {
   const { username, price, validUntil } = req.body;
   try {
-    const passId = Math.random().toString(36).substr(2, 9);
+    const passId = Math.floor(1000 + Math.random() * 9000);
     const newPass = new Pass({
       passId,
       username,
       price,
-      validUntil,
+      validUntil: new Date(validUntil),
       createdAt: new Date(),
       validationStatus: false,
       computeId: '',
@@ -159,7 +163,8 @@ app.post('/passes', async (req, res) => {
     await newPass.save();
     res.status(201).json(newPass);
   } catch (error) {
-    res.status(500).json({ error: 'Error creating pass' });
+    console.error('Error creating pass:', error);
+    res.status(500).json({ error: 'Error creating pass', details: error.message });
   }
 });
 
@@ -175,6 +180,21 @@ app.get('/ticket/:id', async (req, res) => {
     }
   } catch (error) {
     res.status(500).json({ error: 'Error fetching ticket' });
+  }
+});
+
+// Get single pass route
+app.get('/pass/:id', async (req, res) => {
+  const { id } = req.params;
+  try {
+    const pass = await Pass.findOne({ passId: parseInt(id) });
+    if (pass) {
+      res.json(pass);
+    } else {
+      res.status(404).json({ error: 'Pass not found' });
+    }
+  } catch (error) {
+    res.status(500).json({ error: 'Error fetching pass' });
   }
 });
 
