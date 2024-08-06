@@ -1,0 +1,67 @@
+{
+  "users": [
+    {
+      "username": "pawan",
+      "metamaskAddress": "0xa45d994eaa87a75e0549963812dc027b954824c8",
+      "petraAddress": "0xb3471258299c758788dc714fd2506fae26d4f3e966b66ff104b01c4cf45a1040"
+    },
+    {
+      "username": "sam",
+      "metamaskAddress": "0xa45d994eaa87a75e0549963812dc027b954824c8",
+      "petraAddress": "0xb3471258299c758788dc714fd2506fae26d4f3e966b66ff104b01c4cf45a1040"
+    },
+    {
+      "username": "thelonesamurai",
+      "metamaskAddress": "0xa45d994eaa87a75e0549963812dc027b954824c8",
+      "petraAddress": "0xb3471258299c758788dc714fd2506fae26d4f3e966b66ff104b01c4cf45a1040"
+    }
+  ],
+  "tickets": [
+    {
+      "id": "1722926704808",
+      "username": "pawan",
+      "start": "A",
+      "end": "D",
+      "dailyPass": false,
+      "price": 3,
+      "createdAt": "2024-08-06T06:45:04.808Z"
+    },
+    {
+      "id": "1722926740016",
+      "username": "pawan",
+      "start": "A",
+      "end": "D",
+      "dailyPass": false,
+      "price": 3,
+      "createdAt": "2024-08-06T06:45:40.016Z"
+    },
+    {
+      "id": "1722926770300",
+      "username": "sam",
+      "start": "B",
+      "end": "C",
+      "dailyPass": false,
+      "price": 1,
+      "createdAt": "2024-08-06T06:46:10.300Z"
+    },
+    {
+      "id": "1722930153194",
+      "username": "pawan",
+      "start": "A",
+      "end": "D",
+      "dailyPass": true,
+      "price": 5,
+      "createdAt": "2024-08-06T07:42:33.194Z"
+    },
+    {
+      "id": "1722930168785",
+      "username": "pawan",
+      "start": "C",
+      "end": "D",
+      "dailyPass": false,
+      "price": 1,
+      "createdAt": "2024-08-06T07:42:48.785Z"
+    }
+  ],
+  "passes": []
+}
