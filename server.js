@@ -7,11 +7,24 @@ const mongoose = require('mongoose');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+// CORS configuration to allow all origins
 app.use(cors({
   origin: '*',
   methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
   allowedHeaders: ['Content-Type', 'Authorization']
 }));
+
+// Additional CORS handling middleware
+app.use((req, res, next) => {
+  res.header('Access-Control-Allow-Origin', '*');
+  res.header('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
+  res.header('Access-Control-Allow-Headers', 'Content-Type, Authorization');
+  if (req.method === 'OPTIONS') {
+    return res.sendStatus(200);
+  }
+  next();
+});
+
 app.use(bodyParser.json());
 
 // User model
@@ -79,11 +92,13 @@ app.post('/signup', async (req, res) => {
   }
 });
 
-// Login route
+// Login route with debugging
 app.post('/login', async (req, res) => {
+  console.log('Login request received:', req.body);
   const { username } = req.body;
   try {
     const user = await User.findOne({ username });
+    console.log('User found:', user);
     if (user) {
       if (!user.authStatus) {
         res.json({ 
@@ -105,9 +120,11 @@ app.post('/login', async (req, res) => {
         });
       }
     } else {
+      console.log('User not found');
       res.status(404).json({ error: 'User not found' });
     }
   } catch (error) {
+    console.error('Error in login route:', error);
     res.status(500).json({ error: 'Error logging in' });
   }
 });
