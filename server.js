@@ -33,6 +33,7 @@ const Ticket = mongoose.model('Ticket', {
     min: 1000,
     max: 9999
   },
+  userId: String,
   username: String,
   start: String,
   end: String,
@@ -50,6 +51,7 @@ const Pass = mongoose.model('Pass', {
     min: 1000,
     max: 9999
   },
+  userId: String,
   username: String,
   price: Number,
   validUntil: Date,
@@ -156,11 +158,12 @@ app.get('/passes', async (req, res) => {
 
 // Create ticket route
 app.post('/tickets', async (req, res) => {
-  const { username, start, end, price } = req.body;
+  const { userId, username, start, end, price } = req.body;
   try {
     const ticketId = Math.floor(1000 + Math.random() * 9000);
     const newTicket = new Ticket({
       ticketId,
+      userId,
       username,
       start,
       end,
@@ -181,11 +184,12 @@ app.post('/tickets', async (req, res) => {
 
 // Create pass route
 app.post('/passes', async (req, res) => {
-  const { username, price, validUntil } = req.body;
+  const { userId, username, price, validUntil } = req.body;
   try {
     const passId = Math.floor(1000 + Math.random() * 9000);
     const newPass = new Pass({
       passId,
+      userId,
       username,
       price,
       validUntil: new Date(validUntil),
