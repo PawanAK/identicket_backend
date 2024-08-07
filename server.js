@@ -1,4 +1,3 @@
-require('dotenv').config();
 const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
@@ -7,7 +6,15 @@ const mongoose = require('mongoose');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-app.use(cors())
+// CORS configuration
+const corsOptions = {
+  origin: ['http://localhost:5173', 'https://your-production-frontend-url.com'], // Replace with your actual production URL
+  optionsSuccessStatus: 200
+};
+
+app.use(cors(corsOptions));
+app.options('*', cors(corsOptions)); // Enable pre-flight requests for all routes
+
 app.use(bodyParser.json());
 
 // User model
