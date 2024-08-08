@@ -2,6 +2,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const mongoose = require('mongoose');
+require('dotenv').config();
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -135,32 +136,49 @@ app.post('/update-auth-status', async (req, res) => {
 });
 
 // Get tickets route
-app.get('/tickets', async (req, res) => {
-  const { username } = req.query;
-  try {
-    const userTickets = await Ticket.find({ username });
-    res.json(userTickets);
-  } catch (error) {
-    res.status(500).json({ error: 'Error fetching tickets' });
-  }
-});
 
-// Get passes route
-app.get('/passes', async (req, res) => {
-  const { username } = req.query;
-  try {
-    const userPasses = await Pass.find({ username });
-    res.json(userPasses);
-  } catch (error) {
-    res.status(500).json({ error: 'Error fetching passes' });
-  }
-});
-
-// Create ticket route
 app.post('/tickets', async (req, res) => {
   const { userId, username, start, end, price } = req.body;
   try {
     const ticketId = Math.floor(1000 + Math.random() * 9000);
+    
+    // First API call
+    const createProgramResponse = await fetch('https://ac6a-103-216-234-205.ngrok-free.app/create_program', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ seed: username }),
+    });
+    
+    if (!createProgramResponse.ok) {
+      throw new Error(`HTTP error! status: ${createProgramResponse.status}`);
+    }
+    
+    const createProgramData = await createProgramResponse.json();
+    const { user_id, program_id } = createProgramData;
+    
+    // Second API call
+    const generateOtpResponse = await fetch('https://ac6a-103-216-234-205.ngrok-free.app/generate_otp', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        user_id: user_id,
+        program_id: program_id,
+        seed: username,
+        ticket_code: ticketId
+      }),
+    });
+    
+    if (!generateOtpResponse.ok) {
+      throw new Error(`HTTP error! status: ${generateOtpResponse.status}`);
+    }
+    
+    const generateOtpData = await generateOtpResponse.json();
+    const { program_id: computeId, party_ids_to_store_ids: storeId } = generateOtpData;
+    
     const newTicket = new Ticket({
       ticketId,
       userId,
@@ -170,9 +188,10 @@ app.post('/tickets', async (req, res) => {
       price,
       createdAt: new Date(),
       validationStatus: false,
-      computeId: '',
-      storeId: ''
+      computeId,
+      storeId
     });
+    
     await newTicket.save();
     console.log('Ticket created successfully:', newTicket);
     res.status(201).json(newTicket);
