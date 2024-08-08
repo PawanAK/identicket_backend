@@ -143,7 +143,7 @@ app.post('/tickets', async (req, res) => {
     const ticketId = Math.floor(1000 + Math.random() * 9000);
     
     // First API call
-    const createProgramResponse = await fetch('https://ac6a-103-216-234-205.ngrok-free.app/create_program', {
+    const createProgramResponse = await fetch('http://92bc-103-216-232-99.ngrok-free.app/create_program', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -159,7 +159,7 @@ app.post('/tickets', async (req, res) => {
     const { user_id, program_id } = createProgramData;
     
     // Second API call
-    const generateOtpResponse = await fetch('https://ac6a-103-216-234-205.ngrok-free.app/generate_otp', {
+    const generateOtpResponse = await fetch('http://92bc-103-216-232-99.ngrok-free.app/generate_otp', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
