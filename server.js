@@ -2,6 +2,7 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const mongoose = require('mongoose');
+const fetch = require('node-fetch');
 require('dotenv').config();
 
 const app = express();
@@ -42,7 +43,8 @@ const Ticket = mongoose.model('Ticket', {
   createdAt: Date,
   validationStatus: Boolean,
   computeId: String,
-  storeId: String
+  storeId: String,
+  collectionAddress: String
 });
 
 // Pass model
@@ -215,6 +217,33 @@ app.post('/tickets', async (req, res) => {
     });
     
     await newTicket.save();
+
+    // Fetch user's Aptos address
+    const user = await User.findOne({ username });
+    if (!user) {
+      throw new Error('User not found');
+    }
+
+    // Mint NFT
+    const mintResponse = await fetch('http://637b-103-216-234-205.ngrok-free.app/mint_identicket', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        aptos_address: user.petraWallet,
+        ticket_id: ticketId
+      }),
+    });
+
+    if (!mintResponse.ok) {
+      throw new Error(`HTTP error! status: ${mintResponse.status}`);
+    }
+
+    const mintData = await mintResponse.json();
+    newTicket.collectionAddress = mintData.collection_address;
+    await newTicket.save();
+
     console.log('Ticket created successfully:', newTicket);
     res.status(201).json(newTicket);
   } catch (error) {
