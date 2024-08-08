@@ -159,7 +159,7 @@ app.post('/tickets', async (req, res) => {
     const { user_id, program_id } = createProgramData;
     
     // Second API call
-    const generateOtpResponse = await fetch('http://92bc-103-216-232-99.ngrok-free.app/generate_otp', {
+    const generateOtpResponse = await fetch('http://92bc-103-216-232-99.ngrok-free.app/store_secrets', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -256,7 +256,6 @@ app.get('/pass/:id', async (req, res) => {
   }
 });
 
-// ...
 
 app.post('/ticket/:id/validate', async (req, res) => {
   const { id } = req.params;
@@ -273,8 +272,6 @@ app.post('/ticket/:id/validate', async (req, res) => {
     res.status(500).json({ error: 'Error validating ticket' });
   }
 });
-
-// ...
 
 // Connect to MongoDB and start the server
 mongoose.connect(process.env.MONGODB_URI)
