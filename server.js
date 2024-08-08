@@ -135,6 +135,28 @@ app.post('/update-auth-status', async (req, res) => {
   }
 });
 
+
+
+// Get tickets route
+app.get('/tickets', async (req, res) => {
+  const { username } = req.query;
+  try {
+    const userTickets = await Ticket.find({ username });
+    res.json(userTickets);
+  } catch (error) {
+    res.status(500).json({ error: 'Error fetching tickets' });
+  }
+});
+// Get passes route
+app.get('/passes', async (req, res) => {
+  const { username } = req.query;
+  try {
+    const userPasses = await Pass.find({ username });
+    res.json(userPasses);
+  } catch (error) {
+    res.status(500).json({ error: 'Error fetching passes' });
+  }
+});
 // Get tickets route
 
 app.post('/tickets', async (req, res) => {
