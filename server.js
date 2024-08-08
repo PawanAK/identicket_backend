@@ -295,6 +295,33 @@ app.post('/ticket/:id/validate', async (req, res) => {
   }
 });
 
+const OpenAI = require('openai');
+const openai = new OpenAI({ apiKey: process.env.OPENAI_API_KEY });
+
+app.post('/generate-tts', async (req, res) => {
+  const { text } = req.body;
+  console.log(text);
+  if (!text) {
+    return res.status(400).json({ error: 'Text is required' });
+  }
+
+  try {
+    const mp3 = await openai.audio.speech.create({
+      model: "tts-1",
+      voice: "alloy",
+      input: text,
+    });
+    console.log(mp3);
+    const buffer = Buffer.from(await mp3.arrayBuffer());
+    
+    res.set('Content-Type', 'audio/mpeg');
+    res.send(buffer);
+  } catch (error) {
+    console.error('Error generating TTS:', error);
+    res.status(500).json({ error: 'Error generating TTS' });
+  }
+});
+
 // Connect to MongoDB and start the server
 mongoose.connect(process.env.MONGODB_URI)
   .then(() => {
