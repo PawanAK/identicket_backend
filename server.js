@@ -256,6 +256,26 @@ app.get('/pass/:id', async (req, res) => {
   }
 });
 
+// ...
+
+app.post('/ticket/:id/validate', async (req, res) => {
+  const { id } = req.params;
+  try {
+    const ticket = await Ticket.findOne({ ticketId: parseInt(id) });
+    if (ticket) {
+      ticket.validationStatus = true;
+      await ticket.save();
+      res.json({ message: 'Ticket validated successfully' });
+    } else {
+      res.status(404).json({ error: 'Ticket not found' });
+    }
+  } catch (error) {
+    res.status(500).json({ error: 'Error validating ticket' });
+  }
+});
+
+// ...
+
 // Connect to MongoDB and start the server
 mongoose.connect(process.env.MONGODB_URI)
   .then(() => {
